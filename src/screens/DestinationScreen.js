@@ -19,7 +19,6 @@ import { theme } from "../theme";
 const DestinationScreen = ({ route }) => {
   const item = route.params;
   const navigation = useNavigation();
-  console.log(navigation);
   const [isFavourite, toggleFavourite] = useState(false);
 
   return (

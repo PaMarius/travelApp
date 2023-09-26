@@ -5,8 +5,6 @@ import { theme } from "../theme";
 import { categoriesData } from "../constants";
 
 const Categories = () => {
-  console.log(categoriesData);
-
   return (
     <View className="space-y-5">
       <View className="mx-5 flex-row justify-between items-center">
