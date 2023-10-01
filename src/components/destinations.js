@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
-import { destinationData } from "../constants";
+import { destinationData } from "../constants/../../assets/images/default-photo.png";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -9,11 +9,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { HeartIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
 
-const Destinations = () => {
+const Destinations = ({ locationsData }) => {
   const navigation = useNavigation();
   return (
     <View className="mx-4 flex-row justify-between flex-wrap">
-      {destinationData.map((item, index) => {
+      {locationsData.map((item, index) => {
         return (
           <DestinationCard navigation={navigation} item={item} key={index} />
         );
@@ -31,7 +31,11 @@ const DestinationCard = ({ item, navigation }) => {
       className="flex justify-end relative p-4 py-6 space-y-2 mb-5"
     >
       <Image
-        source={item.image}
+        source={
+          item.image
+            ? { uri: item.image }
+            : require("../constants/../../assets/images/default-photo.png")
+        }
         style={{ width: wp(44), height: wp(65), borderRadius: 35 }}
         className="absolute"
       />

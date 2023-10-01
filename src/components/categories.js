@@ -1,10 +1,10 @@
 import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { theme } from "../theme";
 import { categoriesData } from "../constants";
 
-const Categories = () => {
+const Categories = ({ handleSearch }) => {
   return (
     <View className="space-y-5">
       <View className="mx-5 flex-row justify-between items-center">
@@ -27,6 +27,7 @@ const Categories = () => {
         {categoriesData.map((category, index) => {
           return (
             <TouchableOpacity
+              onPress={() => handleSearch(category.title)}
               key={index}
               className="flex items-center space-y-2"
             >

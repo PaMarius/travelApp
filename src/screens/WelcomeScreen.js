@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,9 +7,26 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { theme } from "../theme";
+import { onAuthStateChanged } from "firebase/auth";
+import { FIREBASE_AUTH } from "../../FirebaseConfig";
 
 const WelcomeScreen = () => {
+  const [user, setUser] = useState(null);
+  const [userIsLogged, setUserIsLogged] = useState(false);
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      setUser(user);
+      if (user) {
+        setUserIsLogged(true);
+      } else {
+        setUserIsLogged(false);
+      }
+    });
+  }, [user]);
+
   return (
     <View className="flex-1 flex justify-end">
       {/* background image */}
@@ -42,7 +59,11 @@ const WelcomeScreen = () => {
           </Text>
         </View>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Home")}
+          onPress={() =>
+            userIsLogged
+              ? navigation.navigate("Home")
+              : navigation.navigate("Login")
+          }
           style={{ backgroundColor: theme.bg(1) }}
           className="mx-auto p-3 px-12 rounded-full"
         >

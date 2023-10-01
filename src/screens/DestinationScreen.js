@@ -23,10 +23,11 @@ const DestinationScreen = ({ route }) => {
 
   return (
     <View className="bg-white flex-1">
-      {/* destination image */}
-      <Image source={item.image} style={{ width: wp(100), height: hp(55) }} />
+      <Image
+        source={{ uri: item.image }}
+        style={{ width: wp(100), height: hp(55) }}
+      />
       <StatusBar style={"light"} />
-
       {/* back button */}
       <SafeAreaView
         className={"flex-row justify-between items-center w-full absolute "}
@@ -50,7 +51,6 @@ const DestinationScreen = ({ route }) => {
           />
         </TouchableOpacity>
       </SafeAreaView>
-
       {/* title & descritpion & booking button */}
       <View
         style={{ borderTopLeftRadius: 40, borderTopRightRadius: 40 }}

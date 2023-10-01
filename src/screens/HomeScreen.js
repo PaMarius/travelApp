@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -16,8 +17,38 @@ import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import Categories from "../components/categories";
 import SortCategories from "../components/sortCategories";
 import Destinations from "../components/destinations";
+import { getTravelData } from "../api";
+import { getDetailsFromLocation } from "../api/getDetailsFromLocation";
+import { useNavigation } from "@react-navigation/native";
 
 const HomeScreen = () => {
+  const [travelData, setTravelData] = useState([]);
+  const [locationsData, setLocationsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchText, setSearchText] = useState("");
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    getTravelData("osaka castle").then((data) => {
+      setTravelData(data);
+      setIsLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!travelData) return;
+    setLocationsData(getDetailsFromLocation(travelData));
+  }, [travelData]);
+
+  const handleSearch = (searchText) => {
+    setIsLoading(true);
+    getTravelData(searchText).then((data) => {
+      setTravelData(data);
+      setIsLoading(false);
+    });
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView showsVerticalScrollIndicator={false} className={"space-y-6 "}>
@@ -29,7 +60,7 @@ const HomeScreen = () => {
           >
             Let's Discover
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("UserProfile")}>
             <Image
               source={require("../../assets/images/avatar.png")}
               style={{ height: wp(12), width: wp(12) }}
@@ -45,13 +76,23 @@ const HomeScreen = () => {
               placeholder="Search destination"
               placeholderTextColor={"gray"}
               className="flex-1 text-base mb-1 pl-1 tracking-wider"
+              value={searchText}
+              onChangeText={(text) => setSearchText(text)}
+              onSubmitEditing={() => handleSearch(searchText)}
             />
+            <TouchableOpacity
+              title="Search"
+              onPress={() => handleSearch(searchText)}
+              className="bg-blue-200 p-2 rounded-lg"
+            >
+              <Text>Search</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* categories */}
         <View className="mb-4">
-          <Categories />
+          <Categories handleSearch={handleSearch} />
         </View>
 
         {/* sort categories */}
@@ -61,7 +102,13 @@ const HomeScreen = () => {
 
         {/* destinations */}
         <View>
-          <Destinations />
+          {isLoading ? (
+            <View className=" flex-1 items-center justify-center">
+              <ActivityIndicator size="large" color="#0B646B" />
+            </View>
+          ) : (
+            <Destinations locationsData={locationsData} />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
